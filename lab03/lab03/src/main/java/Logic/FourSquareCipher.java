@@ -1,26 +1,44 @@
 package Logic;
 
-import java.util.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+import Model.GridRecord;
+
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author Bartosz Pałucki
- * @version 1.1
+ * @version 3.0
  * The FourSquareCipher class implements the Four-Square cipher encryption and decryption algorithm.
  * It uses four 5x5 grids to encode and decode text based on two keywords.
  */
+
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class FourSquareCipher {
 
-//    private List<List<Character>> grid1;
-//    private List<List<Character>> grid2;
-//    private List<List<Character>> grid3;
-//    private List<List<Character>> grid4;
+    /**
+     * The first grid used in the Four-Square cipher.
+     */
+    private GridRecord grid1;
 
-    private char[][] grid1;
-    private char[][] grid2;
-    private char[][] grid3;
-    private char[][] grid4;
+    /**
+     * The second grid used in the Four-Square cipher.
+     */
+    private GridRecord grid2;
+
+    /**
+     * The third grid used in the Four-Square cipher.
+     */
+    private GridRecord grid3;
+
+    /**
+     * The fourth grid used in the Four-Square cipher.
+     */
+    private GridRecord grid4;
 
     /**
      * Constructs a FourSquareCipher with the specified keywords and initializes the grids if required.
@@ -42,7 +60,6 @@ public class FourSquareCipher {
      * @param keyword2 the second keyword for the cipher
      */
     private void generateGridsWithKeywords(String keyword1, String keyword2) {
-        // Normalize the keywords
         String normalizeKeyword1 = keyword1.toUpperCase().replaceAll("[^A-Z]", "");
         String normalizeKeyword2 = keyword2.toUpperCase().replaceAll("[^A-Z]", "");
         StringBuilder keywordContent1 = new StringBuilder();
@@ -60,7 +77,6 @@ public class FourSquareCipher {
             }
         }
 
-        // Add remaining letters to complete the keyword grids
         for (char letter = 'A'; letter <= 'Z'; letter++) {
             if (letter == 'J') continue; // Skip J
             if (keywordContent1.indexOf(String.valueOf(letter)) == -1) {
@@ -80,16 +96,17 @@ public class FourSquareCipher {
         }
 
         // Initialize the grids
-        grid1 = new char[5][5];
-        grid2 = new char[5][5];
-        grid3 = new char[5][5];
-        grid4 = new char[5][5];
+        grid1 = new GridRecord(new ArrayList<>());
+        grid2 = new GridRecord(new ArrayList<>());
+        grid3 = new GridRecord(new ArrayList<>());
+        grid4 = new GridRecord(new ArrayList<>());
+
 
         // Fill the grinds with characters
-        fillGrid(grid1, standardAlphabet.toString());
-        fillGrid(grid2, keywordContent1.toString());
-        fillGrid(grid3, keywordContent2.toString());
-        fillGrid(grid4, standardAlphabet.toString());
+        fillGrid(grid1.grid(), standardAlphabet.toString());
+        fillGrid(grid2.grid(), keywordContent1.toString());
+        fillGrid(grid3.grid(), keywordContent2.toString());
+        fillGrid(grid4.grid(), standardAlphabet.toString());
     }
 
     /**
@@ -98,12 +115,14 @@ public class FourSquareCipher {
      * @param grid the grid to be filled
      * @param content the content to fill the grid with
      */
-    private void fillGrid(char[][] grid, String content) {
+    private void fillGrid(List<List<Character>> grid, String content) {
         int index = 0;
         for (int row = 0; row < 5; row++) {
+            List<Character> rowList = new ArrayList<>();
             for (int col = 0; col < 5; col++) {
-                grid[row][col] = content.charAt(index++);
+                rowList.add(content.charAt(index++));
             }
+            grid.add(rowList);
         }
     }
 
@@ -115,19 +134,20 @@ public class FourSquareCipher {
      */
     public String encode(String text) {
         String formattedText = formatText(text);
+        validateText(formattedText);
         StringBuilder encodedText = new StringBuilder();
 
         for (int i = 0; i < formattedText.length(); i += 2) {
             char firstChar = formattedText.charAt(i);
-            char secondChar = (i + 1 < formattedText.length()) ? formattedText.charAt(i + 1) : 'X'; // X used for padding
+            char secondChar = (i + 1 < formattedText.length()) ? formattedText.charAt(i + 1) : 'X';
 
             // Find the positions in the grids
-            int[] pos1 = findPosition(grid1, firstChar);
-            int[] pos2 = findPosition(grid4, secondChar);
+            int[] pos1 = findPosition(grid1.grid(), firstChar);
+            int[] pos2 = findPosition(grid4.grid(), secondChar);
 
             // Apply the encoding rules
-            char encodedFirstChar = grid3[pos1[0]][pos2[1]];
-            char encodedSecondChar = grid2[pos2[0]][pos1[1]];
+            char encodedFirstChar = grid3.grid().get(pos1[0]).get(pos2[1]);
+            char encodedSecondChar = grid2.grid().get(pos2[0]).get(pos1[1]);
 
             encodedText.append(encodedFirstChar).append(encodedSecondChar);
         }
@@ -141,15 +161,15 @@ public class FourSquareCipher {
      * @param ch the character to find
      * @return an array containing the row and column of the character
      */
-    private int[] findPosition(char[][] grid, char ch) {
+    private int[] findPosition(List<List<Character>> grid, char ch) {
         for (int row = 0; row < 5; row++) {
             for (int col = 0; col < 5; col++) {
-                if (grid[row][col] == ch) {
+                if (grid.get(row).get(col) == ch) {
                     return new int[]{row, col};
                 }
             }
         }
-        return null; // Character not found
+        return null;
     }
 
     /**
@@ -160,6 +180,7 @@ public class FourSquareCipher {
      */
     public String decode(String text) {
         String formattedText = formatText(text);
+        validateText(formattedText);
         StringBuilder decodedText = new StringBuilder();
 
         for (int i = 0; i < formattedText.length(); i += 2) {
@@ -167,12 +188,12 @@ public class FourSquareCipher {
             char secondChar = (i + 1 < formattedText.length()) ? formattedText.charAt(i + 1) : 'X'; // X used for padding
 
             // Find the positions in the grids
-            int[] pos1 = findPosition(grid3, firstChar);
-            int[] pos2 = findPosition(grid2, secondChar);
+            int[] pos1 = findPosition(grid3.grid(), firstChar);
+            int[] pos2 = findPosition(grid2.grid(), secondChar);
 
             // Apply the decoding rules
-            char decodedFirstChar = grid1[pos1[0]][pos2[1]];
-            char decodedSecondChar = grid4[pos2[0]][pos1[1]];
+            char decodedFirstChar = grid1.grid().get(pos1[0]).get(pos2[1]);
+            char decodedSecondChar = grid4.grid().get(pos2[0]).get(pos1[1]);
 
             decodedText.append(decodedFirstChar).append(decodedSecondChar);
         }
@@ -186,8 +207,20 @@ public class FourSquareCipher {
      * @return the formatted text
      */
     private String formatText(String text) {
-
         return text.toUpperCase().replaceAll("[^A-Z]", "");
     }
-}
 
+    /**
+     * Validates the given text by checking if all characters are present in the grids.
+     *
+     * @param text the text to be validated
+     * @throws IllegalArgumentException if a character in the text is not found in the grids
+     */
+    private void validateText(String text) {
+        for (char ch: text.toCharArray()) {
+            if (findPosition(grid1.grid(), ch) == null && findPosition(grid4.grid(), ch) == null) {
+                throw new IllegalArgumentException("Invalid character: " + ch);
+            }
+        }
+    }
+}

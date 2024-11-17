@@ -2,14 +2,13 @@ package Main;
 
 import GUI.FourSquareCipherGUI;
 import Logic.FourSquareCipher;
-import lombok.Getter;
 
 /**
  * The Main class is the entry point of the application.
  * It initializes the GUI and the Four-Square cipher with the provided keywords.
  *
  * @author Bartosz Pałucki
- * @version 1.1
+ * @version 3.0
  */
 public class Main {
     /**

@@ -9,7 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 /**
  * @author Bartosz Pałucki
- * @version 1.1
+ * @version 3.0
  * The FourSquareCipherGUI class represents the graphical user interface for the Four-Square Cipher application.
  * It provides functionality to encode and decode text using the Four-Square Cipher algorithm.
  */
