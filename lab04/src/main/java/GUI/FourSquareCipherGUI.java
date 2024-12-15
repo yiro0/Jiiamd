@@ -15,7 +15,7 @@ import java.awt.event.ActionListener;
  *  * It provides functionality to encode and decode text using the Four-Square Cipher algorithm.
  *
  * @author Bartosz Pałucki
- * @version 3.1
+ * @version 4.0
  */
 public class FourSquareCipherGUI extends JFrame {
 

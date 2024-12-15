@@ -8,7 +8,7 @@ import Logic.FourSquareCipher;
  * It initializes the GUI and the Four-Square cipher with the provided keywords.
  *
  * @author Bartosz Pałucki
- * @version 3.1
+ * @version 4.0
  */
 public class Main {
     /**

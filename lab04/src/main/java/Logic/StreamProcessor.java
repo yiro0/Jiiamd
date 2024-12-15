@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
  * It includes methods to filter encoded texts, convert texts to uppercase, and sorts texts alphabetically.
  *
  * @author Bartosz Pałucki
- * @version 3.1
+ * @version 4.0
  */
 
 public class StreamProcessor {

@@ -8,6 +8,6 @@ import java.util.List;
  * @param grid the grid to be used in the cipher
  *
  * @author Bartosz Pałucki
- * @version 3.1
+ * @version 4.0
  */
 public record GridRecord(List<List<Character>> grid) {}

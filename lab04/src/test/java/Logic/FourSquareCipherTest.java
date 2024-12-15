@@ -5,6 +5,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Unit tests for the FourSquareCipher class.
+ *
+ * @author Bartosz Pałucki
+ * @version 4.0
  */
 public class FourSquareCipherTest {
 

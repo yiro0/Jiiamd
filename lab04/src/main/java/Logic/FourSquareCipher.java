@@ -14,7 +14,7 @@ import java.util.List;
  * It uses four 5x5 grids to encode and decode text based on two keywords.
  *
  * @author Bartosz Pałucki
- * @version 3.1
+ * @version 4.0
  */
 @Getter
 @Setter
