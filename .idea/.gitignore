@@ -11,6 +11,7 @@
 /.idea
 /*.iml
 /out/
+/.*xml
 
 # VS Code specific files
 .vscode/
