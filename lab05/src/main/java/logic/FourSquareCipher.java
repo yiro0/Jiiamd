@@ -1,6 +1,6 @@
 package logic;
 
-import gridModel.GridRecord;
+import model.GridRecord;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -1,4 +1,4 @@
-package gridModel;
+package model;
 
 import java.util.List;
 
