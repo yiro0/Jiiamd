@@ -1,53 +1,68 @@
 package controller;
 
 import logic.FourSquareCipher;
+import service.HistoryService;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 @RequestMapping("/cipher")
 public class EncodeDecodeController {
 
-    private final List<String> history = new ArrayList<>();
+    private final HistoryService historyService;
+
+    // Constructor injection of HistoryService
+    public EncodeDecodeController(HistoryService historyService) {
+        this.historyService = historyService;
+    }
 
     @PostMapping("/encode")
     public String encode(
-            @RequestParam String keyword1,
-            @RequestParam String keyword2,
-            @RequestParam String text) {
+            @RequestParam(required = false) String keyword1,
+            @RequestParam(required = false) String keyword2,
+            @RequestParam(required = false) String text) {
+
+        if (keyword1 == null || keyword2 == null || text == null) {
+            throw new NullPointerException("Missing required parameters.");
+        }
+
         try {
             FourSquareCipher cipher = new FourSquareCipher(keyword1, keyword2, true);
             String encodedText = "Encoded Text: " + cipher.encode(text);
-            history.add(encodedText);
+            historyService.addHistory(encodedText);  // Add encoded text to history
             return encodedText;
         } catch (IllegalArgumentException e) {
-            return "Error: " + e.getMessage();
+            throw new IllegalArgumentException("Invalid parameter value.");
         } catch (Exception e) {
-            return "Unexpected error occurred.";
+            throw new RuntimeException("Unexpected error occurred.");
         }
     }
 
     @PostMapping("/decode")
     public String decode(
-            @RequestParam String keyword1,
-            @RequestParam String keyword2,
-            @RequestParam String text) {
+            @RequestParam(required = false) String keyword1,
+            @RequestParam(required = false) String keyword2,
+            @RequestParam(required = false) String text) {
+
+        if (keyword1 == null || keyword2 == null || text == null) {
+            throw new NullPointerException("Missing required parameters.");
+        }
+
         try {
             FourSquareCipher cipher = new FourSquareCipher(keyword1, keyword2, true);
             String decodedText = "Decoded Text: " + cipher.decode(text);
-            history.add(decodedText);
+            historyService.addHistory(decodedText);  // Add decoded text to history
             return decodedText;
         } catch (IllegalArgumentException e) {
-            return "Error: " + e.getMessage();
+            throw new IllegalArgumentException("Invalid parameter value.");
         } catch (Exception e) {
-            return "Unexpected error occurred.";
+            throw new RuntimeException("Unexpected error occurred.");
         }
     }
 
     @GetMapping("/history")
     public List<String> getHistory() {
-        return history;
+        return historyService.getHistory();
     }
 }

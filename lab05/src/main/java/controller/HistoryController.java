@@ -1,5 +1,6 @@
 package controller;
 
+import service.HistoryService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -10,14 +11,15 @@ import java.util.List;
 @RequestMapping("/history")
 public class HistoryController {
 
-    private final EncodeDecodeController encodeDecodeController;
+    private final HistoryService historyService;
 
-    public HistoryController(EncodeDecodeController encodeDecodeController) {
-        this.encodeDecodeController = encodeDecodeController;
+    // Constructor injection of HistoryService
+    public HistoryController(HistoryService historyService) {
+        this.historyService = historyService;
     }
 
     @GetMapping
     public List<String> getHistory() {
-        return encodeDecodeController.getHistory();
+        return historyService.getHistory();  // Return the history from HistoryService
     }
 }
