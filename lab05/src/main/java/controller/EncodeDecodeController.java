@@ -1,51 +1,53 @@
 package controller;
 
 import logic.FourSquareCipher;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("/cipher")
 public class EncodeDecodeController {
 
+    private final List<String> history = new ArrayList<>();
+
     @PostMapping("/encode")
-    public void encode(
+    public String encode(
             @RequestParam String keyword1,
             @RequestParam String keyword2,
-            @RequestParam String text,
-            HttpServletResponse response) throws IOException {
+            @RequestParam String text) {
         try {
             FourSquareCipher cipher = new FourSquareCipher(keyword1, keyword2, true);
-            String encodedText = cipher.encode(text);
-
-            response.setContentType("text/plain");
-            response.getWriter().write("Encoded Text: " + encodedText);
+            String encodedText = "Encoded Text: " + cipher.encode(text);
+            history.add(encodedText);
+            return encodedText;
         } catch (IllegalArgumentException e) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Error: " + e.getMessage());
+            return "Error: " + e.getMessage();
         } catch (Exception e) {
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Unexpected error occurred.");
+            return "Unexpected error occurred.";
         }
     }
 
     @PostMapping("/decode")
-    public void decode(
+    public String decode(
             @RequestParam String keyword1,
             @RequestParam String keyword2,
-            @RequestParam String text,
-            HttpServletResponse response) throws IOException {
+            @RequestParam String text) {
         try {
             FourSquareCipher cipher = new FourSquareCipher(keyword1, keyword2, true);
-            String decodedText = cipher.decode(text);
-
-            response.setContentType("text/plain");
-            response.getWriter().write("Decoded Text: " + decodedText);
+            String decodedText = "Decoded Text: " + cipher.decode(text);
+            history.add(decodedText);
+            return decodedText;
         } catch (IllegalArgumentException e) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Error: " + e.getMessage());
+            return "Error: " + e.getMessage();
         } catch (Exception e) {
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Unexpected error occurred.");
+            return "Unexpected error occurred.";
         }
+    }
+
+    @GetMapping("/history")
+    public List<String> getHistory() {
+        return history;
     }
 }
