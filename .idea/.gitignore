@@ -12,5 +12,14 @@
 /*.iml
 /out/
 
+# Ignore specific IntelliJ IDEA files
+encodings.xml
+misc.xml
+vcs.xml
+workspace.xml
+
+# Ignoree all .idea folders in subdirectories
+**/.idea/
+
 # VS Code specific files
 .vscode/
