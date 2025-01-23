@@ -1,0 +1,25 @@
+# Default ignored files
+/shelf/
+/workspace.xml
+# Editor-based HTTP Client requests
+/httpRequests/
+# Datasource local storage ignored files
+/dataSources/
+/dataSources.local.xml
+
+# IntelliJ IDEA specific files
+/.idea/
+/*.iml
+/out/
+
+# Ignore specific IntelliJ IDEA files
+encodings.xml
+misc.xml
+vcs.xml
+workspace.xml
+
+# Ignoree all .idea folders in subdirectories
+**/.idea/
+
+# VS Code specific files
+.vscode/
