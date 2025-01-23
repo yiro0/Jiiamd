@@ -1,36 +1,56 @@
 package controller;
 
-import org.springframework.stereotype.Controller;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
-@Controller
+/**
+ * Controller to handle application errors and exceptions.
+ * Sends appropriate error responses to the client.
+ *
+ * This approach centralizes error handling and separates concerns.
+ *
+ * Since there was an issue with the dependency injection of the HttpServletResponse, the ResponseEntity class is used instead.
+ *
+ * Ensures that the client is informed about incorrect application operations by using exceptions.
+ *
+ * @author Bartosz Pałucki
+ * @version 5.1
+ */
+@ControllerAdvice
 public class ErrorController {
 
-    @ExceptionHandler(IllegalArgumentException.class)
-    @RequestMapping("/error/illegalArgument")
-    @ResponseBody
-    public String handleIllegalArgumentError(HttpServletResponse response) throws IOException {
-        response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid parameter value.");
-        return null;
-    }
-
+    /**
+     * Handles NullPointerException and returns a 400 Bad Request response.
+     *
+     * @param ex the NullPointerException
+     * @return a ResponseEntity with the error message and HTTP status
+     */
     @ExceptionHandler(NullPointerException.class)
-    @RequestMapping("/error/nullPointer")
-    @ResponseBody
-    public String handleNullPointerError(HttpServletResponse response) throws IOException {
-        response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing required parameters.");
-        return null;
+    public ResponseEntity<String> handleNullPointerException(NullPointerException ex) {
+        return new ResponseEntity<>("Null Pointer Exception: " + ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
+    /**
+     * Handles IllegalArgumentException and returns a 400 Bad Request response.
+     *
+     * @param ex the IllegalArgumentException
+     * @return a ResponseEntity with the error message and HTTP status
+     */
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException ex) {
+        return new ResponseEntity<>("Illegal Argument Exception: " + ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    /**
+     * Handles all other exceptions and returns a 500 Internal Server Error response.
+     *
+     * @param ex the Exception
+     * @return a ResponseEntity with the error message and HTTP status
+     */
     @ExceptionHandler(Exception.class)
-    @RequestMapping("/error/unexpected")
-    @ResponseBody
-    public String handleUnexpectedError(HttpServletResponse response) throws IOException {
-        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Unexpected error occurred.");
-        return null;
+    public ResponseEntity<String> handleException(Exception ex) {
+        return new ResponseEntity<>("Internal Server Error: " + ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

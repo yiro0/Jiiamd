@@ -3,9 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <title>Four-Square Cipher</title>
+<!-- Server-side code in Java can handle setting, reading, and updating cookies, and the HTML forms can be used to trigger these actions...-->
+<!--TODO:Implement this in another java pckg like cookieEventListener-->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            fetch('/cookies/read')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('cookieValues').innerText = data;
+                })
+                .catch(error => console.error('Error fetching cookie values:', error));
+        });
+    </script>
 </head>
 <body>
 <h1>Four-Square Cipher</h1>
+<div id="cookieValues">Loading cookie values...</div>
 <form action="/cipher/encode" method="post">
     <label for="encodeKeyword1">Keyword 1:</label>
     <input type="text" id="encodeKeyword1" name="keyword1" required><br>
