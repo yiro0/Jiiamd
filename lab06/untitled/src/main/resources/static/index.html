@@ -2,30 +2,119 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Four-Square Cipher</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: inline-block;
+            width: 120px;
+        }
+
+        input {
+            margin-bottom: 10px;
+            padding: 5px;
+            width: 200px;
+        }
+
+        button {
+            margin-top: 10px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+
+        .results {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border-radius: 5px;
+        }
+
+        ul {
+            padding-left: 20px;
+        }
+    </style>
 </head>
 <body>
 <h1>Four-Square Cipher</h1>
-<form action="/cipher/encode" method="post">
-    <label for="encodeKeyword1">Keyword 1:</label>
-    <input type="text" id="encodeKeyword1" name="keyword1" required><br>
-    <label for="encodeKeyword2">Keyword 2:</label>
-    <input type="text" id="encodeKeyword2" name="keyword2" required><br>
-    <label for="encodeText">Text to Encode:</label>
-    <input type="text" id="encodeText" name="text" required><br>
-    <button type="submit">Encode</button>
+<form id="cipherForm">
+    <label for="keyword1">Keyword 1:</label>
+    <input type="text" id="keyword1" name="keyword1"><br>
+    <label for="keyword2">Keyword 2:</label>
+    <input type="text" id="keyword2" name="keyword2"><br>
+    <label for="text">Text:</label>
+    <input type="text" id="text" name="text"><br>
+    <button type="button" onclick="submitForm('encode')">Encode</button>
+    <button type="button" onclick="submitForm('decode')">Decode</button>
 </form>
-<form action="/cipher/decode" method="post">
-    <label for="decodeKeyword1">Keyword 1:</label>
-    <input type="text" id="decodeKeyword1" name="keyword1" required><br>
-    <label for="decodeKeyword2">Keyword 2:</label>
-    <input type="text" id="decodeKeyword2" name="keyword2" required><br>
-    <label for="decodeText">Text to Decode:</label>
-    <input type="text" id="decodeText" name="text" required><br>
-    <button type="submit">Decode</button>
-</form>
-<form action="/history" method="get">
-    <button type="submit">View History</button>
-</form>
+
+<div id="results" class="results" style="display: none;">
+    <h2>Result:</h2>
+    <p id="resultText"></p>
+</div>
+
+<h2>History:</h2>
+<ul id="history"></ul>
+
+<script>
+    function submitForm(action) {
+        const form = document.getElementById('cipherForm');
+        const keyword1 = form.keyword1.value;
+        const keyword2 = form.keyword2.value;
+        const text = form.text.value;
+
+        fetch(`/cipher/${action}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: new URLSearchParams({
+                keyword1: keyword1,
+                keyword2: keyword2,
+                text: text
+            })
+        })
+            .then(response => response.text())
+            .then(result => {
+                const resultDiv = document.getElementById("results");
+                const resultText = document.getElementById("resultText");
+
+                resultDiv.style.display = "block";
+                resultText.textContent = result;
+
+                updateHistory();
+            });
+    }
+
+    function updateHistory() {
+        fetch('/cipher/history')
+            .then(response => response.json())
+            .then(history => {
+                const historyList = document.getElementById('history');
+                historyList.innerHTML = ""; // Clear existing history
+
+                history.forEach(entry => {
+                    const listItem = document.createElement('li');
+                    listItem.textContent = `${entry.operation} - ${entry.keyword1}, ${entry.keyword2}: ${entry.text} -> ${entry.result}`;
+                    historyList.appendChild(listItem);
+                });
+            });
+    }
+
+    window.onload = updateHistory;
+</script>
 </body>
 </html>

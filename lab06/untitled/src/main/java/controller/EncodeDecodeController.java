@@ -1,32 +1,25 @@
 package controller;
 
-import logic.FourSquareCipher;
+import model.History;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import service.CipherService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 @RequestMapping("/cipher")
 public class EncodeDecodeController {
 
-    private final List<String> history = new ArrayList<>();
+    @Autowired
+    private CipherService cipherService;
 
     @PostMapping("/encode")
     public String encode(
             @RequestParam String keyword1,
             @RequestParam String keyword2,
             @RequestParam String text) {
-        try {
-            FourSquareCipher cipher = new FourSquareCipher(keyword1, keyword2, true);
-            String encodedText = "Encoded Text: " + cipher.encode(text);
-            history.add(encodedText);
-            return encodedText;
-        } catch (IllegalArgumentException e) {
-            return "Error: " + e.getMessage();
-        } catch (Exception e) {
-            return "Unexpected error occurred.";
-        }
+        return "Encoded Text: " + cipherService.encode(keyword1, keyword2, text);
     }
 
     @PostMapping("/decode")
@@ -34,20 +27,11 @@ public class EncodeDecodeController {
             @RequestParam String keyword1,
             @RequestParam String keyword2,
             @RequestParam String text) {
-        try {
-            FourSquareCipher cipher = new FourSquareCipher(keyword1, keyword2, true);
-            String decodedText = "Decoded Text: " + cipher.decode(text);
-            history.add(decodedText);
-            return decodedText;
-        } catch (IllegalArgumentException e) {
-            return "Error: " + e.getMessage();
-        } catch (Exception e) {
-            return "Unexpected error occurred.";
-        }
+        return "Decoded Text: " + cipherService.decode(keyword1, keyword2, text);
     }
 
     @GetMapping("/history")
-    public List<String> getHistory() {
-        return history;
+    public List<History> getHistory() {
+        return cipherService.getHistory();
     }
 }
