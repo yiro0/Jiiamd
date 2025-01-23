@@ -8,10 +8,9 @@
 /dataSources.local.xml
 
 # IntelliJ IDEA specific files
-/.idea
+/.idea/
 /*.iml
 /out/
-.*xml
 
 # VS Code specific files
 .vscode/
