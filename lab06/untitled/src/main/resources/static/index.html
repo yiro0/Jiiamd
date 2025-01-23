@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Four-Square Cipher</title>
+</head>
+<body>
+<h1>Four-Square Cipher</h1>
+<form action="/cipher/encode" method="post">
+    <label for="encodeKeyword1">Keyword 1:</label>
+    <input type="text" id="encodeKeyword1" name="keyword1" required><br>
+    <label for="encodeKeyword2">Keyword 2:</label>
+    <input type="text" id="encodeKeyword2" name="keyword2" required><br>
+    <label for="encodeText">Text to Encode:</label>
+    <input type="text" id="encodeText" name="text" required><br>
+    <button type="submit">Encode</button>
+</form>
+<form action="/cipher/decode" method="post">
+    <label for="decodeKeyword1">Keyword 1:</label>
+    <input type="text" id="decodeKeyword1" name="keyword1" required><br>
+    <label for="decodeKeyword2">Keyword 2:</label>
+    <input type="text" id="decodeKeyword2" name="keyword2" required><br>
+    <label for="decodeText">Text to Decode:</label>
+    <input type="text" id="decodeText" name="text" required><br>
+    <button type="submit">Decode</button>
+</form>
+<form action="/history" method="get">
+    <button type="submit">View History</button>
+</form>
+</body>
+</html>
