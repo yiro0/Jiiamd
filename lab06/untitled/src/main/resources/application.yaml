@@ -1,0 +1,12 @@
+spring:
+  jpa:
+    properties:
+      hibernate:
+        jdbc:
+          lob:
+            non_contextual_creation: true
+        format_sql: true
+    hibernate:
+      ddl-auto: create-drop # For prod change to ddl-auto: update
+    database-platform: org.hibernate.dialect.DerbyDialect
+    show-sql: true

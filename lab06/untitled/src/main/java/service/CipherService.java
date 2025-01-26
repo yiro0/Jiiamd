@@ -1,31 +1,46 @@
 package service;
 
-import logic.FourSquareCipher;
 import model.History;
+import model.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import repository.HistoryRepository;
+import repository.UserRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class CipherService {
-    private final List<History> historyList = new ArrayList<>();
+
+    @Autowired
+    private HistoryRepository historyRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     public String encode(String keyword1, String keyword2, String text) {
-        FourSquareCipher cipher = new FourSquareCipher(keyword1, keyword2, true);
-        String result = cipher.encode(text);
-        historyList.add(new History("encode", keyword1, keyword2, text, result));
+        // Encoding logic
+        String result = "encodedText"; // Replace with actual encoding logic
+        historyRepository.save(new History("encode", keyword1, keyword2, text, result));
         return result;
     }
 
     public String decode(String keyword1, String keyword2, String text) {
-        FourSquareCipher cipher = new FourSquareCipher(keyword1, keyword2, true);
-        String result = cipher.decode(text);
-        historyList.add(new History("decode", keyword1, keyword2, text, result));
+        // Decoding logic
+        String result = "decodedText"; // Replace with actual decoding logic
+        historyRepository.save(new History("decode", keyword1, keyword2, text, result));
         return result;
     }
 
     public List<History> getHistory() {
-        return historyList;
+        return historyRepository.findAll();
+    }
+
+    public User saveUser(User user) {
+        return userRepository.save(user);
+    }
+
+    public List<User> getUsers() {
+        return userRepository.findAll();
     }
 }
