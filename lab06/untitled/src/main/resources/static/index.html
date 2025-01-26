@@ -50,15 +50,14 @@
 </head>
 <body>
 <h1>Four-Square Cipher</h1>
-<form id="cipherForm">
+<form action="/cipher/encode" method="post">
     <label for="keyword1">Keyword 1:</label>
     <input type="text" id="keyword1" name="keyword1"><br>
     <label for="keyword2">Keyword 2:</label>
     <input type="text" id="keyword2" name="keyword2"><br>
     <label for="text">Text:</label>
     <input type="text" id="text" name="text"><br>
-    <button type="button" onclick="submitForm('encode')">Encode</button>
-    <button type="button" onclick="submitForm('decode')">Decode</button>
+    <button type="submit">Encode</button
 </form>
 
 <div id="results" class="results" style="display: none;">
@@ -70,51 +69,7 @@
 <ul id="history"></ul>
 
 <script>
-    function submitForm(action) {
-        const form = document.getElementById('cipherForm');
-        const keyword1 = form.keyword1.value;
-        const keyword2 = form.keyword2.value;
-        const text = form.text.value;
-
-        fetch(`/cipher/${action}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            body: new URLSearchParams({
-                keyword1: keyword1,
-                keyword2: keyword2,
-                text: text
-            })
-        })
-            .then(response => response.text())
-            .then(result => {
-                const resultDiv = document.getElementById("results");
-                const resultText = document.getElementById("resultText");
-
-                resultDiv.style.display = "block";
-                resultText.textContent = result;
-
-                updateHistory();
-            });
-    }
-
-    function updateHistory() {
-        fetch('/cipher/history')
-            .then(response => response.json())
-            .then(history => {
-                const historyList = document.getElementById('history');
-                historyList.innerHTML = ""; // Clear existing history
-
-                history.forEach(entry => {
-                    const listItem = document.createElement('li');
-                    listItem.textContent = `${entry.operation} - ${entry.keyword1}, ${entry.keyword2}: ${entry.text} -> ${entry.result}`;
-                    historyList.appendChild(listItem);
-                });
-            });
-    }
-
-    window.onload = updateHistory;
+    // JavaScript code can be added here to fetch and display the history
 </script>
 </body>
 </html>
