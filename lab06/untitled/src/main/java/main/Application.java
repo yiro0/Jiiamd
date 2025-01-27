@@ -9,7 +9,7 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
  * Main class for the Spring Boot application.
  *
  * @author Bartosz Pałucki
- * @version 5.1
+ * @version 6.1
  */
 @SpringBootApplication(scanBasePackages = {"controller", "exception", "static", "model", "repository", "service", "utils"})
 @EntityScan("model")
