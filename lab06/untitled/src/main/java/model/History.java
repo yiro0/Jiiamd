@@ -1,10 +1,12 @@
 package model;
 
 import jakarta.persistence.*;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 
+/**
+ * Entity class representing a history entry of operations.
+ * @author Bartosz Pałucki
+ * @version 6.1
+ */
 @Entity
 public class History {
     @Id
@@ -16,14 +18,19 @@ public class History {
     private String text;
     private String result;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
     public History() {}
 
-    public History(String operation, String keyword1, String keyword2, String text, String result) {
+    public History(String operation, String keyword1, String keyword2, String text, String result, User user) {
         this.operation = operation;
         this.keyword1 = keyword1;
         this.keyword2 = keyword2;
         this.text = text;
         this.result = result;
+        this.user = user;
     }
 
     public Long getId() {
@@ -50,7 +57,10 @@ public class History {
         return result;
     }
 
-    // Setters
+    public User getUser() {
+        return user;
+    }
+
     public void setId(Long id) {
         this.id = id;
     }
@@ -73,5 +83,22 @@ public class History {
 
     public void setResult(String result) {
         this.result = result;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    @Override
+    public String toString() {
+        return "History{" +
+                "id=" + id +
+                ", operation='" + operation + '\'' +
+                ", keyword1='" + keyword1 + '\'' +
+                ", keyword2='" + keyword2 + '\'' +
+                ", text='" + text + '\'' +
+                ", result='" + result + '\'' +
+                ", user=" + user +
+                '}';
     }
 }

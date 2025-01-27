@@ -2,8 +2,12 @@ package repository;
 
 import model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
-@Repository
+/**
+ * Repository interface for managing User entities.
+ * @author Bartosz Pałucki
+ * @version 6.1
+ */
 public interface UserRepository extends JpaRepository<User, Long> {
+    User findByUsername(String username);
 }

@@ -19,16 +19,17 @@ public class CipherService {
     private UserRepository userRepository;
 
     public String encode(String keyword1, String keyword2, String text) {
-        // Encoding logic
-        String result = "encodedText"; // Replace with actual encoding logic
-        historyRepository.save(new History("encode", keyword1, keyword2, text, result));
+        String result = "encodedText";
+        User user = userRepository.findByUsername("john_doe");
+        historyRepository.save(new History("encode", keyword1, keyword2, text, result, user));
         return result;
     }
 
     public String decode(String keyword1, String keyword2, String text) {
         // Decoding logic
-        String result = "decodedText"; // Replace with actual decoding logic
-        historyRepository.save(new History("decode", keyword1, keyword2, text, result));
+        String result = "decodedText";
+        User user = userRepository.findByUsername("john_doe");
+        historyRepository.save(new History("decode", keyword1, keyword2, text, result, user));
         return result;
     }
 

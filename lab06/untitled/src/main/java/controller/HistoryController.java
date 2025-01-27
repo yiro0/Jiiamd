@@ -1,28 +1,77 @@
 package controller;
 
 import model.History;
+import model.User;
+import repository.HistoryRepository;
+import repository.UserRepository;
+import service.CipherService;
+import exception.InvalidInputException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import utils.InputValidator;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-@RestController
-@RequestMapping("/history")
+@Controller
 public class HistoryController {
 
-    private final EncodeDecodeController encodeDecodeController;
+    @Autowired
+    private UserRepository userRepository;
 
-    public HistoryController(EncodeDecodeController encodeDecodeController) {
-        this.encodeDecodeController = encodeDecodeController;
+    @Autowired
+    private HistoryRepository historyRepository;
+
+    @Autowired
+    private CipherService cipherService;
+
+    /**
+     * Handles the form submission to add a new history entry.
+     * @param username The username to associate with the history.
+     * @param operation The operation performed.
+     * @param keyword1 The first keyword.
+     * @param keyword2 The second keyword.
+     * @param text The text input by the user.
+     * @param model The model to send data to the view.
+     * @return The view name.
+     * @throws InvalidInputException If the input contains non-Latin characters.
+     */
+    @PostMapping("/addHistory")
+    public String addHistory(@RequestParam String username, @RequestParam String operation,
+                             @RequestParam String keyword1, @RequestParam String keyword2,
+                             @RequestParam String text, Model model) throws InvalidInputException {
+
+        // Validate input fields for non-Latin characters
+        if (!InputValidator.isValidLatin(operation) || !InputValidator.isValidLatin(keyword1) ||
+                !InputValidator.isValidLatin(keyword2) || !InputValidator.isValidLatin(text)) {
+            throw new InvalidInputException("Input contains invalid characters. Only Latin characters are allowed.");
+        }
+
+        // Retrieve user by username
+        User user = userRepository.findByUsername(username);
+        if (user == null) {
+            model.addAttribute("error", "User not found.");
+            return "error"; // Show error if user does not exist
+        }
+
+        // Create and save new History record
+        History history = new History(operation, keyword1, keyword2, text, "Success", user);
+        historyRepository.save(history);
+
+        model.addAttribute("message", "History record added successfully.");
+        return "success"; // Show success page
     }
 
-    @GetMapping
-    public List<String> getHistory() {
-        List<History> historyList = encodeDecodeController.getHistory();
-        return historyList.stream()
-                .map(history -> history.getOperation() + " - " + history.getKeyword1() + ", " + history.getKeyword2() + ": " + history.getText() + " -> " + history.getResult())
-                .collect(Collectors.toList());
+    /**
+     * Displays the history records.
+     * @param model The model to send data to the view.
+     * @return The view name.
+     */
+    @GetMapping("/history")
+    public String getHistory(Model model) {
+        Iterable<History> histories = historyRepository.findAll();
+        model.addAttribute("histories", histories);
+        return "history"; // View with all history records
     }
 }

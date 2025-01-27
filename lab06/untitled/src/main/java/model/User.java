@@ -1,40 +1,59 @@
 package model;
 
 import jakarta.persistence.*;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import java.util.List;
 
+/**
+ * Entity class representing a user in the application.
+ * @author Bartosz Pałucki
+ * @version 6.1
+ */
 @Entity
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String username;
-    private String password;
 
-    // Default constructor (required by JPA OTHERWISE IT WON'T BOOT :)))
-    public  User() {}
-    public User (String username, String password) {
+    private String username;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<History> histories;
+
+    public User() {}
+
+    public User(String username) {
         this.username = username;
-        this.password = password;
     }
+
     public Long getId() {
         return id;
     }
+
     public String getUsername() {
         return username;
     }
-    public String getPassword() {
-        return password;
+
+    public List<History> getHistories() {
+        return histories;
     }
+
     public void setId(Long id) {
         this.id = id;
     }
+
     public void setUsername(String username) {
         this.username = username;
     }
-    public void setPassword(String password) {
-        this.password = password;
+
+    public void setHistories(List<History> histories) {
+        this.histories = histories;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                '}';
     }
 }
